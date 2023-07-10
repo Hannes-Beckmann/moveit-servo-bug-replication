@@ -35,14 +35,14 @@ def load_yaml(package_name, file_path):
 
 def generate_launch_description():
     moveit_config = (
-        MoveItConfigsBuilder("moveit_resources_panda")
-        .robot_description(file_path="config/panda.urdf.xacro")
+        MoveItConfigsBuilder("moveit_resources_fanuc")
+        .robot_description(file_path="config/fanuc.urdf.xacro")
         .to_moveit_configs()
     )
     print(moveit_config.package_path)
 
     # Get parameters for the Servo node
-    servo_yaml = load_yaml("tracking", "config/panda_simulated_config.yaml")
+    servo_yaml = load_yaml("tracking", "config/fanuc_simulated_config.yaml")
     servo_params = {"moveit_servo": servo_yaml}
 
     # RViz
@@ -61,12 +61,12 @@ def generate_launch_description():
 
     # ros2_control using FakeSystem as hardware
     ros2_controllers_path = os.path.join(
-        get_package_share_directory("moveit_resources_panda_moveit_config"),
+        get_package_share_directory("moveit_resources_fanuc_moveit_config"),
         "config",
         "ros2_controllers.yaml",
     )
 
-    print(load_yaml("moveit_resources_panda_moveit_config", "config/ros2_controllers.yaml"))
+    print(load_yaml("moveit_resources_fanuc_moveit_config", "config/ros2_controllers.yaml"))
 
     ros2_control_node = Node(
         package="controller_manager",
@@ -87,10 +87,10 @@ def generate_launch_description():
         ],
     )
 
-    panda_arm_controller_spawner = Node(
+    fanuc_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["panda_arm_controller", "--stopped", "-c", "/controller_manager"],
+        arguments=["fanuc_controller", "--stopped", "-c", "/controller_manager"],
     )
 
     forward_position_controller_spawner = Node(
@@ -128,7 +128,7 @@ def generate_launch_description():
                 package="tf2_ros",
                 plugin="tf2_ros::StaticTransformBroadcasterNode",
                 name="static_tf2_broadcaster",
-                parameters=[{"child_frame_id": "/panda_link0", "frame_id": "/world"}],
+                parameters=[{"child_frame_id": "/base_link", "frame_id": "/world"}],
             ),
             ComposableNode(
                 package="moveit_servo",
@@ -168,14 +168,14 @@ def generate_launch_description():
         output="screen",
     )
 
-    move_robot_node = Node(package="tracking", executable="move_robot")
+    move_robot_node = Node(package="tracking", executable="move_fanuc")
 
     return LaunchDescription(
         [
             rviz_node,
             ros2_control_node,
             joint_state_broadcaster_spawner,
-            panda_arm_controller_spawner,
+            fanuc_controller_spawner,
             servo_node,
             container,
             robot_state_publisher,

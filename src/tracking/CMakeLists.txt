@@ -23,8 +23,8 @@ find_package(rosidl_default_generators REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-add_executable(move_robot src/move_robot.cpp)
-ament_target_dependencies(move_robot
+add_executable(move_panda src/move_panda.cpp)
+ament_target_dependencies(move_panda
   rclcpp
   std_msgs
   tf2
@@ -35,17 +35,40 @@ ament_target_dependencies(move_robot
   std_srvs
   )
 
-target_include_directories(move_robot PUBLIC
+target_include_directories(move_panda PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
 
 
-target_compile_features(move_robot PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(move_panda PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
-install(TARGETS move_robot
+install(TARGETS move_panda
   DESTINATION lib/${PROJECT_NAME})
 
+
+  add_executable(move_fanuc src/move_fanuc.cpp)
+  ament_target_dependencies(move_fanuc
+    rclcpp
+    std_msgs
+    tf2
+    tf2_ros
+    tf2_geometry_msgs
+    geometry_msgs
+    rosidl_runtime_cpp
+    std_srvs
+    )
+  
+  target_include_directories(move_fanuc PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+  
+  
+  
+  target_compile_features(move_fanuc PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+  
+  install(TARGETS move_fanuc
+    DESTINATION lib/${PROJECT_NAME})
 
 
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
