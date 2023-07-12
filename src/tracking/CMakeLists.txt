@@ -71,6 +71,53 @@ install(TARGETS move_panda
     DESTINATION lib/${PROJECT_NAME})
 
 
+    add_executable(move_yu src/move_yu.cpp)
+    ament_target_dependencies(move_yu
+      rclcpp
+      std_msgs
+      tf2
+      tf2_ros
+      tf2_geometry_msgs
+      geometry_msgs
+      rosidl_runtime_cpp
+      std_srvs
+      )
+    
+    target_include_directories(move_yu PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include>)
+    
+    
+    
+    target_compile_features(move_yu PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+    
+    install(TARGETS move_yu
+      DESTINATION lib/${PROJECT_NAME})
+
+      add_executable(interpolate_commands src/interpolate_commands.cpp)
+      ament_target_dependencies(interpolate_commands
+        rclcpp
+        std_msgs
+        tf2
+        tf2_ros
+        tf2_geometry_msgs
+        geometry_msgs
+        rosidl_runtime_cpp
+        std_srvs
+        )
+      
+      target_include_directories(interpolate_commands PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
+      
+      
+      
+      target_compile_features(interpolate_commands PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+      
+      install(TARGETS interpolate_commands
+        DESTINATION lib/${PROJECT_NAME})
+
+
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 
